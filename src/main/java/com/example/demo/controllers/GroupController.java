@@ -31,7 +31,10 @@ public class GroupController {
     ){
         try {
             Group forResponse = groupService.getGroupById(id);
-            return new ResponseEntity<>(new GetGroupByIdResponse(forResponse.getName(), forResponse.getGroupId()), HttpStatus.OK);
+            return new ResponseEntity<>(new GetGroupByIdResponse(
+                    forResponse.getName(),
+                    forResponse.getGroupId()
+            ), HttpStatus.OK);
         } catch (ServiceException s){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

@@ -1,13 +1,9 @@
 package com.example.demo.controllers;
 
-import com.example.demo.entities.Group;
 import com.example.demo.entities.Student;
 import com.example.demo.exceptions.ServiceException;
-import com.example.demo.requests.AddGroupRequest;
 import com.example.demo.requests.AddStudentRequest;
-import com.example.demo.requests.EditGroupRequest;
 import com.example.demo.requests.EditStudentRequest;
-import com.example.demo.responses.GetGroupByIdResponse;
 import com.example.demo.responses.GetStudentByIdResponse;
 import com.example.demo.services.StudentService;
 import org.springframework.http.HttpStatus;

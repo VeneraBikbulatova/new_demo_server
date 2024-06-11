@@ -1,7 +1,10 @@
 package com.example.demo.entities;
 
+import lombok.Data;
+
 import java.util.Objects;
 
+@Data
 public class Student {
     private String lastname;
     private String firstname;

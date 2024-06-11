@@ -1,14 +1,11 @@
 package com.example.demo.responses;
 
-import jakarta.validation.constraints.NotNull;
-
 import java.util.Objects;
 
-public class AddGroupResponse {
-
+public class AddTeacherResponse {
     long id;
 
-    public AddGroupResponse(long id) {
+    public AddTeacherResponse(long id) {
         this.id = id;
     }
 
@@ -20,7 +17,7 @@ public class AddGroupResponse {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AddGroupResponse that = (AddGroupResponse) o;
+        AddTeacherResponse that = (AddTeacherResponse) o;
         return id == that.id;
     }
 
@@ -31,7 +28,7 @@ public class AddGroupResponse {
 
     @Override
     public String toString() {
-        return "AddGroupResponse{" +
+        return "AddTeacherResponse{" +
                 "id=" + id +
                 '}';
     }

@@ -19,7 +19,7 @@ public class StudentRepository implements IStudentRepository{
 
     @Override
     public long addStudent(Student student) throws RepositoryException {
-        String sql = "INSERT INTO student VALUES(?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO student(firstname, patronymic, lastname, group_id, status) VALUES(?, ?, ?, ?, ?)";
         try{
             jdbc.update(
                     sql,
@@ -27,7 +27,6 @@ public class StudentRepository implements IStudentRepository{
                     student.getPatronymic(),
                     student.getLastname(),
                     student.getGroup(),
-                    0,
                     student.getStatus());
             return student.getId();
         } catch (Exception e){

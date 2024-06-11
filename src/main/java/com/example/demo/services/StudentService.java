@@ -15,7 +15,6 @@ public class StudentService {
 
     public StudentService(IStudentRepository studentRepository) {
         this.studentRepository = studentRepository;
-
     }
 
     public long addStudent(AddStudentRequest addStudentRequest) throws ServiceException {
@@ -24,8 +23,8 @@ public class StudentService {
                     addStudentRequest.getFirstname(),
                     addStudentRequest.getPatronymic(),
                     addStudentRequest.getLastname(),
-                    0,
                     addStudentRequest.getGroupId(),
+                    0,
                     addStudentRequest.getStatus());
             studentRepository.addStudent(student);
             return student.getId();
