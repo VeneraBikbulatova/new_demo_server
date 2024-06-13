@@ -7,8 +7,8 @@ import java.util.Objects;
 @Data
 public class Attendance {
     private long id;
-    private Lesson lesson;
-    private Student student;
+    private long lesson_id;
+    private long student_id;
 
     public Attendance(long lesson_id, long student_id, long id) {
         this.lesson_id = lesson_id;

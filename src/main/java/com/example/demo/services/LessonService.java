@@ -9,6 +9,7 @@ import com.example.demo.repository.LessonRepository;
 import com.example.demo.requests.AddLessonRequest;
 import com.example.demo.requests.AddLessonRequest;
 import com.example.demo.requests.EditLessonRequest;
+import com.example.demo.responses.GetLessonByIdResponse;
 
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class LessonService {
         }
     }
 
-    public Lesson getLessonById(long id) throws ServiceException {
+    public GetLessonByIdResponse getLessonById(long id) throws ServiceException {
         try {
             return lessonRepository.getLessonById(id);
         } catch (RepositoryException r){
@@ -64,7 +65,7 @@ public class LessonService {
         }
     }
 
-    public List<Lesson> getAllLessons() throws ServiceException{
+    public List<GetLessonByIdResponse> getAllLessons() throws ServiceException{
         try{
             return lessonRepository.getLesson();
         } catch (RepositoryException r){

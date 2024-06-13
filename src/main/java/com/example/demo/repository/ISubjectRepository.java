@@ -6,7 +6,7 @@ import com.example.demo.exceptions.RepositoryException;
 import java.util.List;
 
 public interface ISubjectRepository {
-    void addSubject(Subject subject) throws RepositoryException;
+    long addSubject(Subject subject) throws RepositoryException;
 
     void editSubject(Subject subject) throws RepositoryException;
 

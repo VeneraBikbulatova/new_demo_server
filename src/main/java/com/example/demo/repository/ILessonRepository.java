@@ -2,6 +2,7 @@ package com.example.demo.repository;
 
 import com.example.demo.entities.Lesson;
 import com.example.demo.exceptions.RepositoryException;
+import com.example.demo.responses.GetLessonByIdResponse;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public interface ILessonRepository {
 
     void deleteLesson(long id) throws RepositoryException;
 
-    Lesson getLessonById(long id) throws RepositoryException;
+    GetLessonByIdResponse getLessonById(long id) throws RepositoryException;
 
-    List<Lesson> getLesson() throws RepositoryException;
+    List<GetLessonByIdResponse> getLesson() throws RepositoryException;
 }

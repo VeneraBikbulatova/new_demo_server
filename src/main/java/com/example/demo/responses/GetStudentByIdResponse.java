@@ -6,15 +6,15 @@ public class GetStudentByIdResponse {
     private String lastname;
     private String firstname;
     private String patronymic;
-    private long group_id;
+    private String group_name;
     private long id;
     private String status;
 
-    public GetStudentByIdResponse(String lastname, String firstname, String patronymic, long group_id, long id, String status) {
+    public GetStudentByIdResponse(String lastname, String firstname, String patronymic, String group_name, long id, String status) {
         this.lastname = lastname;
         this.firstname = firstname;
         this.patronymic = patronymic;
-        this.group_id = group_id;
+        this.group_name = group_name;
         this.id = id;
         this.status = status;
     }
@@ -31,8 +31,8 @@ public class GetStudentByIdResponse {
         return patronymic;
     }
 
-    public long getGroup_id() {
-        return group_id;
+    public String getGroup_name() {
+        return group_name;
     }
 
     public long getId() {
@@ -43,17 +43,41 @@ public class GetStudentByIdResponse {
         return status;
     }
 
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public void setPatronymic(String patronymic) {
+        this.patronymic = patronymic;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GetStudentByIdResponse that = (GetStudentByIdResponse) o;
-        return group_id == that.group_id && id == that.id && Objects.equals(lastname, that.lastname) && Objects.equals(firstname, that.firstname) && Objects.equals(patronymic, that.patronymic) && Objects.equals(status, that.status);
+        return id == that.id && Objects.equals(lastname, that.lastname) && Objects.equals(firstname, that.firstname) && Objects.equals(patronymic, that.patronymic) && Objects.equals(group_name, that.group_name) && Objects.equals(status, that.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(lastname, firstname, patronymic, group_id, id, status);
+        return Objects.hash(lastname, firstname, patronymic, group_name, id, status);
     }
 
     @Override
@@ -62,7 +86,7 @@ public class GetStudentByIdResponse {
                 "lastname='" + lastname + '\'' +
                 ", firstname='" + firstname + '\'' +
                 ", patronymic='" + patronymic + '\'' +
-                ", group_id=" + group_id +
+                ", group_name='" + group_name + '\'' +
                 ", id=" + id +
                 ", status='" + status + '\'' +
                 '}';

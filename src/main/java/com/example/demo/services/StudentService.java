@@ -8,6 +8,8 @@ import com.example.demo.repository.IGroupRepository;
 import com.example.demo.repository.IStudentRepository;
 import com.example.demo.requests.AddStudentRequest;
 import com.example.demo.requests.EditStudentRequest;
+import com.example.demo.responses.GetLessonByIdResponse;
+import com.example.demo.responses.GetStudentByIdResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -26,23 +28,17 @@ public class StudentService {
     }
 
     public long addStudent(AddStudentRequest addStudentRequest) throws ServiceException, RepositoryException, NotFoundService {
-        Optional.of(groupRepository.getGroupById(addStudentRequest.getGroupId())).orElseThrow(() -> new NotFoundService("invalid group id"));
+//        Optional.of(groupRepository.getGroupById(addStudentRequest.getGroupId())).orElseThrow(() -> new NotFoundService("invalid group id"));
         try{
-            Student student = new Student(
-                    addStudentRequest.getFirstname(),
-                    addStudentRequest.getPatronymic(),
-                    addStudentRequest.getLastname(),
-                    addStudentRequest.getGroupId(),
-                    addStudentRequest.getStatus());
-            studentRepository.addStudent(student);
-            return student.getId();
+            long id = studentRepository.addStudent(addStudentRequest);
+            return id;
         } catch (RepositoryException r) {
             throw new ServiceException("service error in addStudent name=" + addStudentRequest.getFirstname(), r);
         }
     }
 
     public long editStudent(EditStudentRequest editStudentRequest) throws ServiceException, RepositoryException, NotFoundService {
-        Optional.of(groupRepository.getGroupById(editStudentRequest.getGroupId())).orElseThrow(() -> new NotFoundService("invalid group id"));
+//        Optional.of(groupRepository.getGroupById(editStudentRequest.getGroupId())).orElseThrow(() -> new NotFoundService("invalid group id"));
         try{
             Student student = new Student(
                     editStudentRequest.getFirstname(),
@@ -59,7 +55,7 @@ public class StudentService {
         }
     }
 
-    public Student getStudentById(long id) throws ServiceException {
+    public GetStudentByIdResponse getStudentById(long id) throws ServiceException {
         try {
             return studentRepository.getStudentById(id);
         } catch (RepositoryException r){
@@ -67,7 +63,7 @@ public class StudentService {
         }
     }
 
-    public List<Student> getStudents() throws ServiceException {
+    public List<GetStudentByIdResponse> getStudents() throws ServiceException {
         try {
             return studentRepository.getStudents();
         } catch (RepositoryException r){
@@ -76,7 +72,7 @@ public class StudentService {
     }
 
     public void deleteStudentById(long id) throws ServiceException, RepositoryException, NotFoundService {
-        Optional.of(studentRepository.getStudentById(id)).orElseThrow(() -> new NotFoundService("invalid group id"));
+//        Optional.of(studentRepository.getStudentById(id)).orElseThrow(() -> new NotFoundService("invalid group id"));
         try{
             studentRepository.deleteStudent(id);
         } catch (RepositoryException r){

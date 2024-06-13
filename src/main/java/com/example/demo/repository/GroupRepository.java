@@ -3,8 +3,13 @@ package com.example.demo.repository;
 import com.example.demo.entities.Group;
 import com.example.demo.exceptions.RepositoryException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
 
 public class GroupRepository implements IGroupRepository{
@@ -19,8 +24,14 @@ public class GroupRepository implements IGroupRepository{
     public long addGroup(Group group) throws RepositoryException {
         String sql = "INSERT INTO student_group(name) VALUES(?);";
         try{
-            jdbc.update(sql, group.getName());
-            return group.getGroupId();
+            PreparedStatementCreator psc = con -> {
+                PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, group.getName());
+                return ps;
+            };
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            jdbc.update(psc, keyHolder);
+            return keyHolder.getKey().longValue();
         } catch (Exception e){
             throw new RepositoryException(
                     String.format("ADD error on add group %s, id=%d", sql, group.getGroupId()), e

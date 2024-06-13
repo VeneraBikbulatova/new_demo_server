@@ -3,8 +3,13 @@ package com.example.demo.repository;
 import com.example.demo.entities.Subject;
 import com.example.demo.exceptions.RepositoryException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
 
 public class SubjectRepository implements ISubjectRepository{
@@ -15,10 +20,17 @@ public class SubjectRepository implements ISubjectRepository{
     }
 
     @Override
-    public void addSubject(Subject subject) throws RepositoryException {
+    public long addSubject(Subject subject) throws RepositoryException {
         String sql = "INSERT INTO subject(name) VALUES(?)";
         try{
-            jdbc.update(sql, subject.getName());
+            PreparedStatementCreator psc = con -> {
+                PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, subject.getName());
+                return ps;
+            };
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            jdbc.update(psc, keyHolder);
+            return keyHolder.getKey().longValue();
         } catch (Exception e){
             throw new RepositoryException(
                     String.format("ADD error on add subject %s, id=%d", sql, subject.getId()), e

@@ -12,7 +12,6 @@ import java.util.List;
 public class GroupService {
     private IGroupRepository groupRepository;
 
-
     public GroupService(IGroupRepository groupRepository) {
         this.groupRepository = groupRepository;
     }

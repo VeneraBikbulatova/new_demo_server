@@ -1,6 +1,6 @@
 package com.example.demo.exceptions;
 
-public class NotFoundRepository extends Exception{
+public class NotFoundRepository extends RepositoryException{
     public NotFoundRepository(String message) {
         super(message);
     }

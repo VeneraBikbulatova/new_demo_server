@@ -1,11 +1,11 @@
 package com.example.demo.controllers;
 
 import com.example.demo.entities.Student;
-import com.example.demo.exceptions.NotFoundService;
 import com.example.demo.exceptions.RepositoryException;
 import com.example.demo.exceptions.ServiceException;
 import com.example.demo.requests.AddStudentRequest;
 import com.example.demo.requests.EditStudentRequest;
+import com.example.demo.responses.GetLessonByIdResponse;
 import com.example.demo.responses.GetStudentByIdResponse;
 import com.example.demo.services.StudentService;
 import org.springframework.http.HttpStatus;
@@ -30,7 +30,7 @@ public class StudentController {
     ){
         try{
             return new ResponseEntity<>(studentService.addStudent(addStudentRequest), HttpStatus.OK);
-        } catch (ServiceException | RepositoryException | NotFoundService e) {
+        } catch (ServiceException | RepositoryException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -41,7 +41,7 @@ public class StudentController {
     ){
         try{
             return new ResponseEntity<>(studentService.editStudent(editStudentRequest), HttpStatus.OK);
-        } catch (ServiceException | NotFoundService | RepositoryException e) {
+        } catch (ServiceException | RepositoryException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -51,12 +51,12 @@ public class StudentController {
             @PathVariable ("id") long id
     ){
         try {
-            Student forResponse = studentService.getStudentById(id);
+            GetStudentByIdResponse forResponse = studentService.getStudentById(id);
             return new ResponseEntity<>(new GetStudentByIdResponse(
                     forResponse.getFirstname(),
                     forResponse.getPatronymic(),
                     forResponse.getLastname(),
-                    forResponse.getGroup(),
+                    forResponse.getGroup_name(),
                     forResponse.getId(),
                     forResponse.getStatus()
             ), HttpStatus.OK);
@@ -66,9 +66,9 @@ public class StudentController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Student>> getAllGroups(){
+    public ResponseEntity<List<GetStudentByIdResponse>> getAllGroups(){
         try{
-            return new ResponseEntity<List<Student>>(studentService.getStudents(), HttpStatus.OK);
+            return new ResponseEntity<List<GetStudentByIdResponse>>(studentService.getStudents(), HttpStatus.OK);
         } catch (ServiceException s){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -81,7 +81,7 @@ public class StudentController {
         try{
             studentService.deleteStudentById(id);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch(ServiceException | RepositoryException | NotFoundService e){
+        } catch(ServiceException | RepositoryException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

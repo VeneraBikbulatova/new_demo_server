@@ -3,13 +3,22 @@ package com.example.demo.repository;
 import com.example.demo.entities.Group;
 import com.example.demo.entities.Lesson;
 import com.example.demo.exceptions.RepositoryException;
+import com.example.demo.responses.GetLessonByIdResponse;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
 
 public class LessonRepository implements ILessonRepository{
     private JdbcTemplate jdbc;
+    private SubjectRepository subjectRepository;
+    private TeacherRepository teacherRepository;
+    private GroupRepository groupRepository;
 
     public LessonRepository(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
@@ -19,15 +28,19 @@ public class LessonRepository implements ILessonRepository{
     public long addLesson(Lesson lesson) throws RepositoryException {
         String sql = "INSERT INTO lesson(name, group_id, teacher_id, subject_id, lesson_date, lesson_time) VALUES(?, ?, ?, ?, ?, ?)";
         try{
-            jdbc.update(
-                    sql,
-                    lesson.getName(),
-                    lesson.getGroup_id(),
-                    lesson.getTeacher_id(),
-                    lesson.getSubject_id(),
-                    lesson.getLesson_date(),
-                    lesson.getLesson_time());
-            return lesson.getId();
+            PreparedStatementCreator psc = con -> {
+                PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, lesson.getName());
+                ps.setLong(2, lesson.getGroup_id());
+                ps.setLong(3, lesson.getTeacher_id());
+                ps.setLong(4, lesson.getSubject_id());
+                ps.setDate(5, lesson.getLesson_date());
+                ps.setInt(6, lesson.getLesson_time());
+                return ps;
+            };
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            jdbc.update(psc, keyHolder);
+            return keyHolder.getKey().longValue();
         } catch (Exception e){
             throw new RepositoryException(
                     String.format("ADD error on add lesson %s, id=%d", sql, lesson.getId()), e
@@ -77,20 +90,26 @@ public class LessonRepository implements ILessonRepository{
     }
 
     @Override
-    public Lesson getLessonById(long id) throws RepositoryException {
+    public GetLessonByIdResponse getLessonById(long id) throws RepositoryException {
         String sql = "SELECT * FROM lesson WHERE id=?";
         try{
             return jdbc.queryForObject(sql,
                     (ResultSet rs, int rownumber)->{
-                        return new Lesson(
-                                rs.getInt("id"),
-                                rs.getString("name"),
-                                rs.getInt("group_id"),
-                                rs.getInt("teacher_id"),
-                                rs.getInt("subject_id"),
-                                rs.getDate("lesson_date"),
-                                rs.getInt("lesson_time")
-                        );
+                        try {
+                            return new GetLessonByIdResponse(
+                                    rs.getInt("id"),
+                                    rs.getString("name"),
+                                    groupRepository.getGroupById(rs.getInt("group_id")).getName(),
+                                    teacherRepository.getTeacherById(rs.getInt("teacher_id")).getFirstname(),
+                                    teacherRepository.getTeacherById(rs.getInt("teacher_id")).getPatronymic(),
+                                    teacherRepository.getTeacherById(rs.getInt("teacher_id")).getLastname(),
+                                    subjectRepository.getSubjectById(rs.getInt("subject_id")).getName(),
+                                    rs.getDate("lesson_date"),
+                                    rs.getInt("lesson_time")
+                            );
+                        } catch (RepositoryException e) {
+                            throw new RuntimeException(e);
+                        }
                     },
                     id
             );
@@ -102,20 +121,26 @@ public class LessonRepository implements ILessonRepository{
     }
 
     @Override
-    public List<Lesson> getLesson() throws RepositoryException {
+    public List<GetLessonByIdResponse> getLesson() throws RepositoryException {
         String sql = "SELECT * FROM lesson";
         try{
             return jdbc.query(sql,
                     (ResultSet rs, int rownumber)->{
-                        return new Lesson(
-                                rs.getInt("id"),
-                                rs.getString("name"),
-                                rs.getInt("group_id"),
-                                rs.getInt("teacher_id"),
-                                rs.getInt("subject_id"),
-                                rs.getDate("lesson_date"),
-                                rs.getInt("lesson_time")
-                        );
+                        try {
+                            return new GetLessonByIdResponse(
+                                    rs.getInt("id"),
+                                    rs.getString("name"),
+                                    groupRepository.getGroupById(rs.getInt("group_id")).getName(),
+                                    teacherRepository.getTeacherById(rs.getInt("teacher_id")).getFirstname(),
+                                    teacherRepository.getTeacherById(rs.getInt("teacher_id")).getPatronymic(),
+                                    teacherRepository.getTeacherById(rs.getInt("teacher_id")).getLastname(),
+                                    subjectRepository.getSubjectById(rs.getInt("subject_id")).getName(),
+                                    rs.getDate("lesson_date"),
+                                    rs.getInt("lesson_time")
+                            );
+                        } catch (RepositoryException e) {
+                            throw new RuntimeException(e);
+                        }
                     });
         } catch (Exception e){
             throw new RepositoryException(

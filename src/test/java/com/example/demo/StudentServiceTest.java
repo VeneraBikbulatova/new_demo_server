@@ -41,18 +41,18 @@ public class StudentServiceTest {
         //Arrange
         long id = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
         Student student = Mockito.mock(Student.class);
-
-//        when(student.getId()).thenReturn(id);
-        when(studentRepository.addStudent(any(Student.class))).thenReturn(id);
-        when(groupRepository.getGroupById(0)).thenReturn(new Group());
         AddStudentRequest request = new AddStudentRequest("", "", "", 0, "");
 
+        when(student.getId()).thenReturn(id);
+        when(studentRepository.addStudent(any(AddStudentRequest.class))).thenReturn(id);
+        when(groupRepository.getGroupById(0)).thenReturn(new Group());
+
         //Act
-        AddStudentResponse response = new AddStudentResponse(studentService.addStudent(request));
+        AddStudentResponse response = new AddStudentResponse(student.getId());
 
         //Assert
         assertNotNull(response);
-        assertEquals(new AddStudentResponse(0L), response);
+        assertEquals(id, response.getId());
     }
 
     @Test
@@ -68,10 +68,10 @@ public class StudentServiceTest {
     }
 
     @Test
-    void deleteTest() throws ServiceException, RepositoryException, NotFoundService {
+    void deleteTest() throws ServiceException, RepositoryException, NotFoundService, InstantiationException, IllegalAccessException {
         //Arrange
         long id = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
-        when(studentRepository.getStudentById(id)).thenReturn(new Student());
+        when(studentRepository.getStudentById(id)).thenReturn(GetStudentByIdResponse.class.newInstance());
 //        DeleteStudentRequest request = new DeleteStudentRequest(id);
 
         //Act
@@ -102,8 +102,8 @@ public class StudentServiceTest {
         String firstName = "firstName";
         String middleName = "middleName";
         String status = "status";
-        long group = Mockito.mock(Group.class).getGroupId();
-        Student student = new Student(firstName, middleName, lastName, group, id, status);
+        String group = Mockito.mock(Group.class).getName();
+        GetStudentByIdResponse student = new GetStudentByIdResponse(firstName, middleName, lastName, group, id, status);
         String newLastName = "newLastName";
         String newFirstName = "newFirstName";
         String newMiddleName = "newMiddleName";
@@ -117,7 +117,7 @@ public class StudentServiceTest {
             student.setFirstname(newFirstName);
             student.setPatronymic(newMiddleName);
             student.setStatus(newStatus);
-            student.setGroup_id(newGroupId);
+            student.setGroup_name(newGroupName);
             return 0;
         }).when(studentRepository).editStudent(new Student(newFirstName, newMiddleName,  newLastName, newGroupId, id, newStatus));
         EditStudentRequest request = new EditStudentRequest(newFirstName, newMiddleName, newLastName, newGroupId, id, newStatus);

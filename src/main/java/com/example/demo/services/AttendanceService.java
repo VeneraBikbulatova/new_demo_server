@@ -6,6 +6,7 @@ import com.example.demo.exceptions.ServiceException;
 import com.example.demo.repository.IAttendanceRepository;
 import com.example.demo.requests.AddAttendanceRequest;
 import com.example.demo.requests.EditAttendanceRequest;
+import com.example.demo.responses.GetAttendanceByIdResponse;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class AttendanceService {
         }
     }
 
-    public Attendance getAttendanceById(long id) throws ServiceException {
+    public GetAttendanceByIdResponse getAttendanceById(long id) throws ServiceException {
         try {
             return attendanceRepository.getAttendanceById(id);
         } catch (RepositoryException r){
@@ -52,9 +53,9 @@ public class AttendanceService {
         }
     }
 
-    public List<Attendance> getAttendancesByLessonId() throws ServiceException{
+    public List<GetAttendanceByIdResponse> getAttendancesByLessonId(long lesson_id) throws ServiceException{
         try{
-            return attendanceRepository.getAttendances();
+            return attendanceRepository.getAttendances(lesson_id);
         } catch (RepositoryException r){
             throw new ServiceException("service error in getAllAttendances");
         }

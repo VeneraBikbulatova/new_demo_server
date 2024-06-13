@@ -27,13 +27,15 @@ public class LessonController {
             @PathVariable("id") long id
     ){
         try {
-            Lesson forResponse = lessonService.getLessonById(id);
+            GetLessonByIdResponse forResponse = lessonService.getLessonById(id);
             return new ResponseEntity<>(new GetLessonByIdResponse(
                     forResponse.getId(),
                     forResponse.getName(),
-                    forResponse.getGroup_id(),
-                    forResponse.getTeacher_id(),
-                    forResponse.getSubject_id(),
+                    forResponse.getGroup_name(),
+                    forResponse.getTeacher_firstname(),
+                    forResponse.getTeacher_patronymic(),
+                    forResponse.getTeacher_lastname(),
+                    forResponse.getSubject_name(),
                     forResponse.getLesson_date(),
                     forResponse.getLesson_time())
                     , HttpStatus.OK);
@@ -43,9 +45,9 @@ public class LessonController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Lesson>> getAllLessons(){
+    public ResponseEntity<List<GetLessonByIdResponse>> getAllLessons(){
         try{
-            return new ResponseEntity<List<Lesson>>(lessonService.getAllLessons(), HttpStatus.OK);
+            return new ResponseEntity<List<GetLessonByIdResponse>>(lessonService.getAllLessons(), HttpStatus.OK);
         } catch (ServiceException s){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

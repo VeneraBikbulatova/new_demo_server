@@ -9,6 +9,7 @@ import com.example.demo.services.AttendanceService;
 import com.example.demo.services.LessonService;
 import com.example.demo.services.StudentService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,22 +56,23 @@ public class AttendanceController {
             @PathVariable("id") long id
     ){
         try {
-            Attendance forResponse = attendanceService.getAttendanceById(id);
+            GetAttendanceByIdResponse forResponse = attendanceService.getAttendanceById(id);
             return new ResponseEntity<>(new GetAttendanceByIdResponse(
                     id,
-                    lessonService.getLessonById(forResponse.getLesson_id()).getName(),
-                    studentService.getStudentById(forResponse.getStudent_id()).getFirstname(),
-                    studentService.getStudentById(forResponse.getStudent_id()).getPatronymic(),
-                    studentService.getStudentById(forResponse.getStudent_id()).getLastname()), HttpStatus.OK);
+                    forResponse.getLesson_name(),
+                    forResponse.getStudent_firstname(),
+                    forResponse.getStudent_patronymic(),
+                    forResponse.getStudent_lastname()),
+                    HttpStatus.OK);
         } catch (ServiceException s){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping()
-    public ResponseEntity<List<Attendance>> getAttendancesByLessonId(){
+    public ResponseEntity<List<GetAttendanceByIdResponse>> getAttendancesByLessonId(long lesson_id){
         try{
-            return new ResponseEntity<List<Attendance>>(attendanceService.getAttendancesByLessonId(), HttpStatus.OK);
+            return new ResponseEntity<List<GetAttendanceByIdResponse>>(attendanceService.getAttendancesByLessonId(lesson_id), HttpStatus.OK);
         } catch (ServiceException s){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
