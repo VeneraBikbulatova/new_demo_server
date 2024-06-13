@@ -52,7 +52,7 @@ public class AttendanceService {
         }
     }
 
-    public List<Attendance> getAllAttendances() throws ServiceException{
+    public List<Attendance> getAttendancesByLessonId() throws ServiceException{
         try{
             return attendanceRepository.getAttendances();
         } catch (RepositoryException r){

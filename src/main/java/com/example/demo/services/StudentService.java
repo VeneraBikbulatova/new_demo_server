@@ -1,30 +1,38 @@
 package com.example.demo.services;
 
 import com.example.demo.entities.Student;
+import com.example.demo.exceptions.NotFoundService;
 import com.example.demo.exceptions.RepositoryException;
 import com.example.demo.exceptions.ServiceException;
+import com.example.demo.repository.IGroupRepository;
 import com.example.demo.repository.IStudentRepository;
 import com.example.demo.requests.AddStudentRequest;
 import com.example.demo.requests.EditStudentRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Optional;
 
 public class StudentService {
+    @Autowired
     private IStudentRepository studentRepository;
+    @Autowired
+    private IGroupRepository groupRepository;
 
 
-    public StudentService(IStudentRepository studentRepository) {
+    public StudentService(IStudentRepository studentRepository, IGroupRepository groupRepository) {
         this.studentRepository = studentRepository;
+        this.groupRepository = groupRepository;
     }
 
-    public long addStudent(AddStudentRequest addStudentRequest) throws ServiceException {
+    public long addStudent(AddStudentRequest addStudentRequest) throws ServiceException, RepositoryException, NotFoundService {
+        Optional.of(groupRepository.getGroupById(addStudentRequest.getGroupId())).orElseThrow(() -> new NotFoundService("invalid group id"));
         try{
             Student student = new Student(
                     addStudentRequest.getFirstname(),
                     addStudentRequest.getPatronymic(),
                     addStudentRequest.getLastname(),
                     addStudentRequest.getGroupId(),
-                    0,
                     addStudentRequest.getStatus());
             studentRepository.addStudent(student);
             return student.getId();
@@ -33,7 +41,8 @@ public class StudentService {
         }
     }
 
-    public long editStudent(EditStudentRequest editStudentRequest) throws ServiceException{
+    public long editStudent(EditStudentRequest editStudentRequest) throws ServiceException, RepositoryException, NotFoundService {
+        Optional.of(groupRepository.getGroupById(editStudentRequest.getGroupId())).orElseThrow(() -> new NotFoundService("invalid group id"));
         try{
             Student student = new Student(
                     editStudentRequest.getFirstname(),
@@ -66,7 +75,8 @@ public class StudentService {
         }
     }
 
-    public void deleteStudentById(long id) throws ServiceException{
+    public void deleteStudentById(long id) throws ServiceException, RepositoryException, NotFoundService {
+        Optional.of(studentRepository.getStudentById(id)).orElseThrow(() -> new NotFoundService("invalid group id"));
         try{
             studentRepository.deleteStudent(id);
         } catch (RepositoryException r){

@@ -14,6 +14,9 @@ public class Group {
         this.groupId = groupId;
     }
 
+    public Group() {
+    }
+
     public String getName() {
         return name;
     }

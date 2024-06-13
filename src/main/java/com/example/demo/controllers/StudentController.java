@@ -1,6 +1,8 @@
 package com.example.demo.controllers;
 
 import com.example.demo.entities.Student;
+import com.example.demo.exceptions.NotFoundService;
+import com.example.demo.exceptions.RepositoryException;
 import com.example.demo.exceptions.ServiceException;
 import com.example.demo.requests.AddStudentRequest;
 import com.example.demo.requests.EditStudentRequest;
@@ -28,7 +30,7 @@ public class StudentController {
     ){
         try{
             return new ResponseEntity<>(studentService.addStudent(addStudentRequest), HttpStatus.OK);
-        } catch (ServiceException e) {
+        } catch (ServiceException | RepositoryException | NotFoundService e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -39,7 +41,7 @@ public class StudentController {
     ){
         try{
             return new ResponseEntity<>(studentService.editStudent(editStudentRequest), HttpStatus.OK);
-        } catch (ServiceException e) {
+        } catch (ServiceException | NotFoundService | RepositoryException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -79,7 +81,7 @@ public class StudentController {
         try{
             studentService.deleteStudentById(id);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch(ServiceException s){
+        } catch(ServiceException | RepositoryException | NotFoundService e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

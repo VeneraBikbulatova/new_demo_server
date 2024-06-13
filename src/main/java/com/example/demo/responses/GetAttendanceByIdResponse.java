@@ -4,25 +4,37 @@ import java.util.Objects;
 
 public class GetAttendanceByIdResponse {
     private long id;
-    private long lesson_id;
-    private long student_id;
+    private String lesson_name;
+    private String student_firstname;
+    private String student_patronymic;
+    private String student_lastname;
 
-    public GetAttendanceByIdResponse(long id, long lesson_id, long student_id) {
+    public GetAttendanceByIdResponse(long id, String lesson_name, String student_firstname, String student_patronymic, String student_lastname) {
         this.id = id;
-        this.lesson_id = lesson_id;
-        this.student_id = student_id;
+        this.lesson_name = lesson_name;
+        this.student_firstname = student_firstname;
+        this.student_patronymic = student_patronymic;
+        this.student_lastname = student_lastname;
     }
 
     public long getId() {
         return id;
     }
 
-    public long getLesson_id() {
-        return lesson_id;
+    public String getLesson_name() {
+        return lesson_name;
     }
 
-    public long getStudent_id() {
-        return student_id;
+    public String getStudent_firstname() {
+        return student_firstname;
+    }
+
+    public String getStudent_patronymic() {
+        return student_patronymic;
+    }
+
+    public String getStudent_lastname() {
+        return student_lastname;
     }
 
     @Override
@@ -30,20 +42,22 @@ public class GetAttendanceByIdResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GetAttendanceByIdResponse that = (GetAttendanceByIdResponse) o;
-        return id == that.id && lesson_id == that.lesson_id && student_id == that.student_id;
+        return id == that.id && Objects.equals(lesson_name, that.lesson_name) && Objects.equals(student_firstname, that.student_firstname) && Objects.equals(student_patronymic, that.student_patronymic) && Objects.equals(student_lastname, that.student_lastname);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, lesson_id, student_id);
+        return Objects.hash(id, lesson_name, student_firstname, student_patronymic, student_lastname);
     }
 
     @Override
     public String toString() {
-        return "GetAttendanceByIdResponce{" +
+        return "GetAttendanceByIdResponse{" +
                 "id=" + id +
-                ", lesson_id=" + lesson_id +
-                ", student_id=" + student_id +
+                ", lesson_name='" + lesson_name + '\'' +
+                ", student_firstname='" + student_firstname + '\'' +
+                ", student_patronymic='" + student_patronymic + '\'' +
+                ", student_lastname='" + student_lastname + '\'' +
                 '}';
     }
 }

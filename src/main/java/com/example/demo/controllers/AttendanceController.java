@@ -6,6 +6,8 @@ import com.example.demo.requests.AddAttendanceRequest;
 import com.example.demo.requests.EditAttendanceRequest;
 import com.example.demo.responses.GetAttendanceByIdResponse;
 import com.example.demo.services.AttendanceService;
+import com.example.demo.services.LessonService;
+import com.example.demo.services.StudentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +17,13 @@ import java.util.List;
 @RequestMapping("/api/attendance")
 public class AttendanceController {
     private AttendanceService attendanceService;
+    private LessonService lessonService;
+    private StudentService studentService;
 
-    public AttendanceController(AttendanceService attendanceService) {
+    public AttendanceController(AttendanceService attendanceService, LessonService lessonService, StudentService studentService) {
         this.attendanceService = attendanceService;
+        this.lessonService = lessonService;
+        this.studentService = studentService;
     }
 
 
@@ -51,18 +57,20 @@ public class AttendanceController {
         try {
             Attendance forResponse = attendanceService.getAttendanceById(id);
             return new ResponseEntity<>(new GetAttendanceByIdResponse(
-                    forResponse.getLesson_id(),
-                    forResponse.getStudent_id(),
-                    forResponse.getId()), HttpStatus.OK);
+                    id,
+                    lessonService.getLessonById(forResponse.getLesson_id()).getName(),
+                    studentService.getStudentById(forResponse.getStudent_id()).getFirstname(),
+                    studentService.getStudentById(forResponse.getStudent_id()).getPatronymic(),
+                    studentService.getStudentById(forResponse.getStudent_id()).getLastname()), HttpStatus.OK);
         } catch (ServiceException s){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping()
-    public ResponseEntity<List<Attendance>> getAllAttendances(){
+    public ResponseEntity<List<Attendance>> getAttendancesByLessonId(){
         try{
-            return new ResponseEntity<List<Attendance>>(attendanceService.getAllAttendances(), HttpStatus.OK);
+            return new ResponseEntity<List<Attendance>>(attendanceService.getAttendancesByLessonId(), HttpStatus.OK);
         } catch (ServiceException s){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

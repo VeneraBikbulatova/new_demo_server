@@ -27,6 +27,17 @@ public class Student {
         this.status = status;
     }
 
+    public Student() {
+    }
+
+    public Student(String lastname, String firstname, String patronymic, long group_id, String status) {
+        this.lastname = lastname;
+        this.firstname = firstname;
+        this.patronymic = patronymic;
+        this.group_id = group_id;
+        this.status = status;
+    }
+
     public String getLastname() {
         return lastname;
     }

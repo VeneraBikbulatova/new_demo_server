@@ -10,11 +10,9 @@ import java.util.List;
 public class StudentRepository implements IStudentRepository{
 
     private JdbcTemplate jdbc;
-//    private GeneratorId generator;
 
     public StudentRepository(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
-//        this.generator = new GeneratorId(jdbc);
     }
 
     @Override

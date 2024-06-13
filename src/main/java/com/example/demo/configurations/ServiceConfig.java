@@ -16,8 +16,8 @@ public class ServiceConfig {
     }
 
     @Bean
-    public StudentService studentService(IStudentRepository studentRepository){
-        return new StudentService(studentRepository);
+    public StudentService studentService(IStudentRepository studentRepository, IGroupRepository groupRepository){
+        return new StudentService(studentRepository, groupRepository);
     }
 
     @Bean
