@@ -1,8 +1,10 @@
 package com.example.demo.repository;
 
 import com.example.demo.entities.Attendance;
+import com.example.demo.entities.Student;
 import com.example.demo.exceptions.RepositoryException;
 import com.example.demo.responses.GetAttendanceByIdResponse;
+import com.example.demo.responses.GetStudentByIdResponse;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -71,21 +73,15 @@ public class AttendanceRepository implements IAttendanceRepository{
     }
 
     @Override
-    public GetAttendanceByIdResponse getAttendanceById(long id) throws RepositoryException {
+    public Attendance getAttendanceById(long id) throws RepositoryException {
         String sql = "SELECT * FROM attendance WHERE id=?";
         try{
             return jdbc.queryForObject(sql,
                     (ResultSet rs, int rownumber)->{
-                        try {
-                            return new GetAttendanceByIdResponse(
-                                    rs.getInt("id"),
-                                    lessonRepository.getLessonById(rs.getInt("lesson_id")).getName(),
-                                    studentRepository.getStudentById(rs.getInt("student_id")).getFirstname(),
-                                    studentRepository.getStudentById(rs.getInt("student_id")).getPatronymic(),
-                                    studentRepository.getStudentById(rs.getInt("student_id")).getLastname());
-                        } catch (RepositoryException e) {
-                            throw new RuntimeException(e);
-                        }
+                        return new Attendance(
+                                rs.getInt("lesson_id"),
+                                rs.getInt("student_id"),
+                                rs.getInt("id"));
                     },
                     id
             );
@@ -97,22 +93,16 @@ public class AttendanceRepository implements IAttendanceRepository{
     }
 
     @Override
-    public List<GetAttendanceByIdResponse> getAttendances(long lesson_id) throws RepositoryException {
+    public List<Attendance> getAttendances(long lesson_id) throws RepositoryException {
         String sql = "SELECT * FROM attendance WHERE lesson_id = ?";
         try{
             return jdbc.query(sql,
                     (ResultSet rs, int rownumber)->{
-                        try {
-                            return new GetAttendanceByIdResponse(
-                                    rs.getInt("id"),
-                                    lessonRepository.getLessonById(rs.getInt("lesson_id")).getName(),
-                                    studentRepository.getStudentById(rs.getInt("student_id")).getFirstname(),
-                                    studentRepository.getStudentById(rs.getInt("student_id")).getPatronymic(),
-                                    studentRepository.getStudentById(rs.getInt("student_id")).getLastname()
-                            );
-                        } catch (RepositoryException e) {
-                            throw new RuntimeException(e);
-                        }
+                        return new Attendance(
+                                rs.getInt("lesson_id"),
+                                rs.getInt("student_id"),
+                                rs.getInt("id")
+                        );
                     },
                     lesson_id);
         } catch (Exception e){

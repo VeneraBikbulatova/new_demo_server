@@ -16,9 +16,9 @@ public interface IStudentRepository {
 
     void deleteStudent(long id) throws RepositoryException;
 
-    GetStudentByIdResponse getStudentById(long id) throws RepositoryException;
+    Student getStudentById(long id) throws RepositoryException;
 
-    List<GetStudentByIdResponse> getStudents() throws RepositoryException;
+    List<Student> getStudents() throws RepositoryException;
 
 
 

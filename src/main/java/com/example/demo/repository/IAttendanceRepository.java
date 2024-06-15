@@ -14,7 +14,7 @@ public interface IAttendanceRepository {
 
     void deleteAttendance(long id) throws RepositoryException;
 
-    GetAttendanceByIdResponse getAttendanceById(long id) throws RepositoryException;
+    Attendance getAttendanceById(long id) throws RepositoryException;
 
-    List<GetAttendanceByIdResponse> getAttendances(long lesson_id) throws RepositoryException;
+    List<Attendance> getAttendances(long lesson_id) throws RepositoryException;
 }

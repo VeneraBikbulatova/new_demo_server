@@ -26,13 +26,13 @@ public class ServiceConfig {
     }
 
     @Bean
-    public LessonService lessonService(ILessonRepository lessonRepository){
-        return new LessonService(lessonRepository);
+    public LessonService lessonService(ILessonRepository lessonRepository, IGroupRepository groupRepository, ITeacherRepository teacherRepository, ISubjectRepository subjectRepository){
+        return new LessonService(lessonRepository, groupRepository, teacherRepository, subjectRepository);
     }
 
     @Bean
-    public AttendanceService attendanceService(IAttendanceRepository attendanceRepository){
-        return new AttendanceService(attendanceRepository);
+    public AttendanceService attendanceService(IAttendanceRepository attendanceRepository, IStudentRepository studentRepository, ILessonRepository lessonRepository){
+        return new AttendanceService(attendanceRepository, studentRepository, lessonRepository);
     }
 
     @Bean

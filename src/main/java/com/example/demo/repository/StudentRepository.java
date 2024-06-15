@@ -61,7 +61,7 @@ public class StudentRepository implements IStudentRepository{
                     student.getFirstname(),
                     student.getPatronymic(),
                     student.getLastname(),
-                    student.getGroup(),
+                    student.getGroup_id(),
                     student.getId(),
                     student.getStatus(),
                     student.getId());
@@ -86,20 +86,21 @@ public class StudentRepository implements IStudentRepository{
     }
 
     @Override
-    public GetStudentByIdResponse getStudentById(long id) throws RepositoryException {
+    public Student getStudentById(long id) throws RepositoryException {
+
         String sql = "SELECT * FROM student WHERE id=?";
         try{
             return jdbc.queryForObject(sql,
                     (ResultSet rs, int rownumber)->{
                         try {
-                            return new GetStudentByIdResponse(
-                                    rs.getString("firstname"),
-                                    rs.getString("patronymic"),
-                                    rs.getString("lastname"),
-                                    groupRepository.getGroupById(rs.getInt("group_id")).getName(),
-                                    rs.getInt("id"),
-                                    rs.getString("status"));
-                        } catch (RepositoryException e) {
+                                return new Student(
+                                        rs.getString("firstname"),
+                                        rs.getString("patronymic"),
+                                        rs.getString("lastname"),
+                                        rs.getInt("group_id"),
+                                        rs.getInt("id"),
+                                        rs.getString("status"));
+                        } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
                     },
@@ -112,23 +113,55 @@ public class StudentRepository implements IStudentRepository{
         }
     }
 
+//    @Override
+//    public GetStudentByIdResponse getStudentById(long id) throws RepositoryException {
+//
+//        String sql = "SELECT * FROM student WHERE id=?";
+//        try{
+//            return jdbc.queryForObject(sql,
+//                    (ResultSet rs, int rownumber)->{
+//                        try {
+//                            if (rs.next()) {
+//                                Long groupId = rs.getLong("group_id");
+//                                System.out.println(groupId + " ******") ;
+//                                String groupName = groupRepository.getGroupById(groupId).getName();
+//
+//                            return new GetStudentByIdResponse(
+//                                    rs.getString("firstname"),
+//                                    rs.getString("patronymic"),
+//                                    rs.getString("lastname"),
+//                                    groupName,
+//                                    rs.getInt("id"),
+//                                    rs.getString("status"));
+//                        } else {
+//                                throw new RepositoryException("no such student was found");
+//                            }
+//                        } catch (Exception e) {
+//                            throw new RuntimeException(e);
+//                        }
+//                    },
+//                    id
+//            );
+//        } catch (Exception e){
+//            throw new RepositoryException(
+//                    String.format("GET error in getStudentById %s, id = %d", sql, id), e
+//            );
+//        }
+//    }
+
     @Override
-    public List<GetStudentByIdResponse> getStudents() throws RepositoryException {
+    public List<Student> getStudents() throws RepositoryException {
         String sql = "SELECT * FROM student";
         try{
             return jdbc.query(sql,
                     (ResultSet rs, int rownumber)->{
-                        try {
-                            return new GetStudentByIdResponse(
-                                    rs.getString("firstname"),
-                                    rs.getString("patronymic"),
-                                    rs.getString("lastname"),
-                                    groupRepository.getGroupById(rs.getInt("group_id")).getName(),
-                                    rs.getInt("id"),
-                                    rs.getString("status"));
-                        } catch (RepositoryException e) {
-                            throw new RuntimeException(e);
-                        }
+                        return new Student(
+                                rs.getString("firstname"),
+                                rs.getString("patronymic"),
+                                rs.getString("lastname"),
+                                rs.getLong("group_id"),
+                                rs.getInt("id"),
+                                rs.getString("status"));
                     });
         } catch (Exception e){
             throw new RepositoryException(

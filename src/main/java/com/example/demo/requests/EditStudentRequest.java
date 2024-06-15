@@ -1,5 +1,6 @@
 package com.example.demo.requests;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
@@ -17,8 +18,8 @@ public class EditStudentRequest {
     @Length(min = 1, max = 45)
     private String patronymic;
 
-    @NotNull
-    private long group;
+    @NotBlank
+    private long group_id;
 
     @NotNull
     private long id;
@@ -27,11 +28,11 @@ public class EditStudentRequest {
     @Length(min = 1, max = 45)
     private String status;
 
-    public EditStudentRequest(String firstname, String patronymic, String lastname, long group, long id, String status) {
+    public EditStudentRequest(String firstname, String patronymic, String lastname, long group_id, long id, String status) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.patronymic = patronymic;
-        this.group = group;
+        this.group_id = group_id;
         this.id = id;
         this.status = status;
     }
@@ -49,7 +50,7 @@ public class EditStudentRequest {
     }
 
     public long getGroupId() {
-        return group;
+        return group_id;
     }
 
     public long getId() {

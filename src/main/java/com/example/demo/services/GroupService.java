@@ -28,9 +28,8 @@ public class GroupService {
 
     public long editGroup(EditGroupRequest editGroupRequest) throws ServiceException{
         try{
-            Group group = new Group(editGroupRequest.getId(), editGroupRequest.getName());
-            groupRepository.editGroup(group);
-            return group.getGroupId();
+            groupRepository.editGroup(editGroupRequest);
+            return editGroupRequest.getId();
         } catch (RepositoryException r){
             throw new ServiceException("service error in editGroup id=" + editGroupRequest.getId(), r);
         }

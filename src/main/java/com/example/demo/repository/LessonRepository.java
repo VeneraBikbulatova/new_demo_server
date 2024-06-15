@@ -2,6 +2,7 @@ package com.example.demo.repository;
 
 import com.example.demo.entities.Group;
 import com.example.demo.entities.Lesson;
+import com.example.demo.entities.Teacher;
 import com.example.demo.exceptions.RepositoryException;
 import com.example.demo.responses.GetLessonByIdResponse;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -90,27 +91,21 @@ public class LessonRepository implements ILessonRepository{
     }
 
     @Override
-    public GetLessonByIdResponse getLessonById(long id) throws RepositoryException {
+    public Lesson getLessonById(long id) throws RepositoryException {
         String sql = "SELECT * FROM lesson WHERE id=?";
         try{
             return jdbc.queryForObject(sql,
                     (ResultSet rs, int rownumber)->{
-                        try {
-                            return new GetLessonByIdResponse(
-                                    rs.getInt("id"),
-                                    rs.getString("name"),
-                                    groupRepository.getGroupById(rs.getInt("group_id")).getName(),
-                                    teacherRepository.getTeacherById(rs.getInt("teacher_id")).getFirstname(),
-                                    teacherRepository.getTeacherById(rs.getInt("teacher_id")).getPatronymic(),
-                                    teacherRepository.getTeacherById(rs.getInt("teacher_id")).getLastname(),
-                                    subjectRepository.getSubjectById(rs.getInt("subject_id")).getName(),
-                                    rs.getDate("lesson_date"),
-                                    rs.getInt("lesson_time")
+                        return new Lesson(
+                                rs.getInt("id"),
+                                rs.getString("name"),
+                                rs.getInt("group_id"),
+                                rs.getInt("teacher_id"),
+                                rs.getInt("subject_id"),
+                                rs.getDate("lesson_date"),
+                                rs.getInt("lesson_time")
                             );
-                        } catch (RepositoryException e) {
-                            throw new RuntimeException(e);
-                        }
-                    },
+                        },
                     id
             );
         } catch (Exception e){
@@ -121,26 +116,20 @@ public class LessonRepository implements ILessonRepository{
     }
 
     @Override
-    public List<GetLessonByIdResponse> getLesson() throws RepositoryException {
+    public List<Lesson> getLesson() throws RepositoryException {
         String sql = "SELECT * FROM lesson";
         try{
             return jdbc.query(sql,
                     (ResultSet rs, int rownumber)->{
-                        try {
-                            return new GetLessonByIdResponse(
-                                    rs.getInt("id"),
-                                    rs.getString("name"),
-                                    groupRepository.getGroupById(rs.getInt("group_id")).getName(),
-                                    teacherRepository.getTeacherById(rs.getInt("teacher_id")).getFirstname(),
-                                    teacherRepository.getTeacherById(rs.getInt("teacher_id")).getPatronymic(),
-                                    teacherRepository.getTeacherById(rs.getInt("teacher_id")).getLastname(),
-                                    subjectRepository.getSubjectById(rs.getInt("subject_id")).getName(),
-                                    rs.getDate("lesson_date"),
-                                    rs.getInt("lesson_time")
-                            );
-                        } catch (RepositoryException e) {
-                            throw new RuntimeException(e);
-                        }
+                        return new Lesson(
+                                rs.getInt("id"),
+                                rs.getString("name"),
+                                rs.getInt("group_id"),
+                                rs.getInt("teacher_id"),
+                                rs.getInt("subject_id"),
+                                rs.getDate("lesson_date"),
+                                rs.getInt("lesson_time")
+                        );
                     });
         } catch (Exception e){
             throw new RepositoryException(

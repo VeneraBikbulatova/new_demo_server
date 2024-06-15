@@ -13,7 +13,7 @@ public interface ILessonRepository {
 
     void deleteLesson(long id) throws RepositoryException;
 
-    GetLessonByIdResponse getLessonById(long id) throws RepositoryException;
+    Lesson getLessonById(long id) throws RepositoryException;
 
-    List<GetLessonByIdResponse> getLesson() throws RepositoryException;
+    List<Lesson> getLesson() throws RepositoryException;
 }

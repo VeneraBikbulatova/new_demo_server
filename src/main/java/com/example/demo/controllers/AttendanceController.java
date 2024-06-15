@@ -56,21 +56,16 @@ public class AttendanceController {
             @PathVariable("id") long id
     ){
         try {
-            GetAttendanceByIdResponse forResponse = attendanceService.getAttendanceById(id);
-            return new ResponseEntity<>(new GetAttendanceByIdResponse(
-                    id,
-                    forResponse.getLesson_name(),
-                    forResponse.getStudent_firstname(),
-                    forResponse.getStudent_patronymic(),
-                    forResponse.getStudent_lastname()),
-                    HttpStatus.OK);
+            return new ResponseEntity<GetAttendanceByIdResponse>(attendanceService.getAttendanceById(id), HttpStatus.OK);
         } catch (ServiceException s){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    @GetMapping()
-    public ResponseEntity<List<GetAttendanceByIdResponse>> getAttendancesByLessonId(long lesson_id){
+    @GetMapping("lesson/{id}")
+    public ResponseEntity<List<GetAttendanceByIdResponse>> getAttendancesByLessonId(
+            @PathVariable("id") long lesson_id
+    ){
         try{
             return new ResponseEntity<List<GetAttendanceByIdResponse>>(attendanceService.getAttendancesByLessonId(lesson_id), HttpStatus.OK);
         } catch (ServiceException s){

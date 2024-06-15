@@ -71,6 +71,8 @@ public class StudentController {
             return new ResponseEntity<List<GetStudentByIdResponse>>(studentService.getStudents(), HttpStatus.OK);
         } catch (ServiceException s){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (RepositoryException e) {
+            throw new RuntimeException(e);
         }
     }
 

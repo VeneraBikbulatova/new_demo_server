@@ -10,6 +10,7 @@ import com.example.demo.repository.IStudentRepository;
 import com.example.demo.requests.AddStudentRequest;
 import com.example.demo.requests.EditStudentRequest;
 import com.example.demo.responses.AddStudentResponse;
+import com.example.demo.responses.GetGroupByIdResponse;
 import com.example.demo.responses.GetStudentByIdResponse;
 import com.example.demo.services.StudentService;
 import org.junit.jupiter.api.Test;
@@ -39,20 +40,19 @@ public class StudentServiceTest {
     @Test
     void addTest() throws NotFoundService, RepositoryException, ServiceException {
         //Arrange
-        long id = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+        long studentId = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
         Student student = Mockito.mock(Student.class);
-        AddStudentRequest request = new AddStudentRequest("", "", "", 0, "");
+//        when(student.getId()).thenReturn(studentId);
+        when(studentRepository.addStudent(any(AddStudentRequest.class))).thenReturn(studentId);
 
-        when(student.getId()).thenReturn(id);
-        when(studentRepository.addStudent(any(AddStudentRequest.class))).thenReturn(id);
-        when(groupRepository.getGroupById(0)).thenReturn(new Group());
-
+        when(groupRepository.getGroupById(anyLong())).thenReturn(new Group());
+        AddStudentRequest request = new AddStudentRequest("", "", "", 6L, null);
         //Act
-        AddStudentResponse response = new AddStudentResponse(student.getId());
+        long res = studentService.addStudent(request);
 
         //Assert
-        assertNotNull(response);
-        assertEquals(id, response.getId());
+        assertNotNull(res);
+        assertEquals(studentId, res);
     }
 
     @Test
@@ -70,15 +70,13 @@ public class StudentServiceTest {
     @Test
     void deleteTest() throws ServiceException, RepositoryException, NotFoundService, InstantiationException, IllegalAccessException {
         //Arrange
-        long id = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
-        when(studentRepository.getStudentById(id)).thenReturn(GetStudentByIdResponse.class.newInstance());
-//        DeleteStudentRequest request = new DeleteStudentRequest(id);
+        long studentId = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
 
         //Act
-        studentService.deleteStudentById(id);
+        studentService.deleteStudentById(studentId);
 
         //Assert
-        verify(studentRepository, times(1)).deleteStudent(id);
+        verify(studentRepository, times(1)).deleteStudent(studentId);
     }
 
     @Test
@@ -88,7 +86,6 @@ public class StudentServiceTest {
         doAnswer(invocation -> {
             throw new NotFoundService("invalid student id");
         }).when(studentRepository).getStudentById(id);
-//        IdRequest request = new IdRequest(studentId);
 
         //Assert
         assertThrows(NotFoundService.class, () -> studentService.deleteStudentById(id));
@@ -103,21 +100,22 @@ public class StudentServiceTest {
         String middleName = "middleName";
         String status = "status";
         String group = Mockito.mock(Group.class).getName();
-        GetStudentByIdResponse student = new GetStudentByIdResponse(firstName, middleName, lastName, group, id, status);
+        long group_id = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+        Student student = new Student(firstName, middleName, lastName, group_id, id, status);
         String newLastName = "newLastName";
         String newFirstName = "newFirstName";
         String newMiddleName = "newMiddleName";
         String newStatus = "newStatus";
         String newGroupName = UUID.randomUUID().toString();
         long newGroupId = Mockito.mock(Group.class).getGroupId();
-        when(studentRepository.getStudentById(id)).thenReturn(student);
+//        when(studentRepository.getStudentById(id)).thenReturn(student);
         when(groupRepository.getGroupById(newGroupId)).thenReturn(new Group());
         doAnswer(invocation -> {
             student.setLastname(newLastName);
             student.setFirstname(newFirstName);
             student.setPatronymic(newMiddleName);
             student.setStatus(newStatus);
-            student.setGroup_name(newGroupName);
+            student.setGroup_id(newGroupId);
             return 0;
         }).when(studentRepository).editStudent(new Student(newFirstName, newMiddleName,  newLastName, newGroupId, id, newStatus));
         EditStudentRequest request = new EditStudentRequest(newFirstName, newMiddleName, newLastName, newGroupId, id, newStatus);
@@ -135,49 +133,49 @@ public class StudentServiceTest {
         //Arrange
         long studentId = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
         doAnswer(invocation -> {
-            throw new NotFoundService("invalid group id");
+            throw new NotFoundService("invalid student id");
         }).when(studentRepository).getStudentById(studentId);
-        EditStudentRequest request = new EditStudentRequest("", "", "", 0, studentId, null);
+
+        EditStudentRequest request = new EditStudentRequest("f", "p", "l", 1, studentId, "s");
 
         //Assert
-        assertThrows(NotFoundService.class, () -> studentService.editStudent(request));
+        assertThrows(NotFoundService.class, () -> studentRepository.editStudent(studentRepository.getStudentById(studentId)));
     }
 
-//    @Test
-//    void getTest() throws NotFoundService, RepositoryException, ServiceException {
-//        // Arrange
-//        long studentId = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
-//        long groupId = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
-//
-//        Group group = new Group();
-//        group.setGroupId(groupId);
-//
-//        Student student = new Student("", "", "", group.getGroupId(), studentId, "");
-//        when(studentRepository.getStudentById(studentId)).thenReturn(Optional.of(student));
-////        IdRequest request = new IdRequest(studentId);
-//
-//        // Act
-//        Student newStudent = studentService.getStudentById(studentId);
-//        GetStudentByIdResponse response = new GetStudentByIdResponse(
-//                newStudent.getFirstname(),
-//                newStudent.getPatronymic(),
-//                newStudent.getLastname(),
-//                newStudent.getGroup(),
-//                newStudent.getId(),
-//                newStudent.getStatus()
-//        );
-//
-//        // Assert
-//        assertNotNull(response);
-//        assertEquals(new GetStudentByIdResponse(
-//                student.getFirstname(),
-//                student.getPatronymic(),
-//                student.getLastname(),
-//                student.getGroup(),
-//                student.getId(),
-//                student.getStatus()
-//        ), response);
-//    }
+    @Test
+    void getTest() throws NotFoundService, RepositoryException, ServiceException {
+        // Arrange
+        long studentId = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+        long groupId = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+
+        Group group = new Group(groupId, "");
+
+        Student student = new Student("", "", "", group.getGroupId(), studentId, "");
+        when(studentRepository.getStudentById(studentId)).thenReturn(student);
+        when(groupRepository.getGroupById(groupId)).thenReturn(group);
+
+        // Act
+        GetStudentByIdResponse newStudent = studentService.getStudentById(studentId);
+        GetStudentByIdResponse response = new GetStudentByIdResponse(
+                newStudent.getFirstname(),
+                newStudent.getPatronymic(),
+                newStudent.getLastname(),
+                newStudent.getGroup_name(),
+                newStudent.getId(),
+                newStudent.getStatus()
+        );
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(new GetStudentByIdResponse(
+                student.getFirstname(),
+                student.getPatronymic(),
+                student.getLastname(),
+                groupRepository.getGroupById(student.getGroup_id()).getName(),
+                student.getId(),
+                student.getStatus()
+        ), response);
+    }
 
     @Test
     void getTest_ThrowException() throws RepositoryException {
@@ -186,7 +184,6 @@ public class StudentServiceTest {
         doAnswer(invocation -> {
             throw new NotFoundService("invalid student id");
         }).when(studentRepository).getStudentById(studentId);
-//        IdRequest request = new IdRequest(studentId);
 
         //Assert
         assertThrows(NotFoundService.class, () -> studentService.getStudentById(studentId));

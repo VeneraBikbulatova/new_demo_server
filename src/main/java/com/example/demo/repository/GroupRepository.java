@@ -2,6 +2,7 @@ package com.example.demo.repository;
 
 import com.example.demo.entities.Group;
 import com.example.demo.exceptions.RepositoryException;
+import com.example.demo.requests.EditGroupRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -40,13 +41,13 @@ public class GroupRepository implements IGroupRepository{
     }
 
     @Override
-    public void editGroup(Group group) throws RepositoryException {
-        String sql = "UPDATE student_group SET id = ?, name = ? WHERE id = ?)";
+    public void editGroup(EditGroupRequest editGroupRequest) throws RepositoryException {
+        String sql = "UPDATE student_group SET id = ?, name = ? WHERE id = ?";
         try{
-            jdbc.update(sql, group.getGroupId(), group.getName(), group.getGroupId());
+            jdbc.update(sql, editGroupRequest.getId(), editGroupRequest.getName(), editGroupRequest.getId());
         } catch (Exception e){
             throw new RepositoryException(
-                    String.format("UPDATE error on update group %s, id=%d", sql, group.getGroupId()), e
+                    String.format("UPDATE error on update group %s, id=%d", sql, editGroupRequest.getId()), e
             );
         }
     }
